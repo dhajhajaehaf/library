@@ -1,16 +1,18 @@
-local funcsToHook = {
-    "validateMovement",
-    "validateVelocity",
-    "validateCollisions"
+local targets = {
+validateMovement = true,
+validateVelocity = true,
+validateCollisions = true,
+check = true
 }
 
-for _, v in pairs(getgc(true)) do
-    if typeof(v) == "function" then
-        local info = debug.getinfo(v)
-        if info.name and table.find(funcsToHook, info.name) then
-            hookfunction(v, function(...) 
-                return true 
-            end)
-        end
-    end
+for _, v in pairs(getgc()) do
+if type(v) == "function" then
+local name = debug.getinfo(v).name
+if targets[name] then
+hookfunction(v, function(...)
+return true
+end)
+targets[name] = nil
+end
+end
 end
